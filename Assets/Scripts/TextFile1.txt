@@ -1,0 +1,273 @@
+﻿        //*** Failed
+		
+		//WheelHit wHit;
+        //float travelLf = 1.0f;
+        //float travelRf = 1.0f;
+
+        //bool groundedL1f = wheels[0].GetGroundHit(out wHit);
+
+        //if (groundedL1f)
+        //{
+        //    travelLf = (-wheels[0].transform.InverseTransformPoint(wHit.point).y -
+        //        wheels[0].radius) / wheels[0].suspensionDistance;
+        //}
+
+        //bool groundedR1f = wheels[1].GetGroundHit(out wHit);
+
+        //if (groundedR1f)
+        //{
+        //    travelRf = (-wheels[1].transform.InverseTransformPoint(wHit.point).y -
+        //        wheels[1].radius) / wheels[1].suspensionDistance;
+        //}
+
+        //float antiRollForcef = (travelRf - travelLf) * antiRoll;
+
+        //if (groundedL1f)
+        //{
+        //    rigidbody.AddForceAtPosition(wheels[0].transform.up * -antiRollForcef, wheels[0].transform.position);
+        //}
+
+        //if (groundedR1f)
+        //{
+        //    rigidbody.AddForceAtPosition(wheels[1].transform.up * -antiRollForcef, wheels[1].transform.position);
+        //}
+
+        //float travelL = 1.0f;
+        //float travelR = 1.0f;
+
+        //bool groundedL1 = wheels[2].GetGroundHit(out wHit);
+
+        //if (groundedL1)
+        //{
+        //    travelL = (-wheels[2].transform.InverseTransformPoint(wHit.point).y -
+        //        wheels[2].radius) / wheels[2].suspensionDistance;
+        //}
+
+        //bool groundedR1 = wheels[3].GetGroundHit(out wHit);
+
+        //if (groundedR1)
+        //{
+        //    travelR = (-wheels[3].transform.InverseTransformPoint(wHit.point).y -
+        //        wheels[3].radius) / wheels[3].suspensionDistance;
+        //}
+
+        //float antiRollForce = (travelR - travelL) * antiRoll;
+
+        //if (groundedL1)
+        //{
+        //    rigidbody.AddForceAtPosition(wheels[2].transform.up * -antiRollForce, wheels[2].transform.position);
+        //}
+
+        //if (groundedR1)
+        //{
+        //    rigidbody.AddForceAtPosition(wheels[3].transform.up * -antiRollForce, wheels[3].transform.position);
+        //}
+
+		/*
+		using UnityEngine;
+using System.Collections;
+
+
+
+
+public class TBR_CarController : MonoBehaviour
+{
+
+    //basic car operations
+    public float flMaxSteer_b = 60.0f;
+    public float flEnginePower_b  = 40.0f;
+    public float flSteerSpeed_b = 20.0f;
+    public float flMaxBrake_b = 120.0f;
+
+    public float flMass_b = 2200.0f;
+    public Transform trCenterOfMass_b;
+
+    //wheel opperations
+    public WheelCollider[] wheels;
+    public GameObject[] wheelMesh;
+
+    private float flSteer_v = 0.0f;
+    private float flForward_v = 0.0f;
+    private float flReverse_v = 0.0f;
+    private bool blBrakeRelesed_v = false;
+    private float flMotor_v = 0.0f;
+    private float flBrake_v = 0.0f;
+    private bool blReversing_v = false;
+    private float flSpeed_v = 0.0f;
+
+    //suspension opperations/*
+    /*
+    public float flRelSusAmt_b = 0.25f;
+    public float flSusBias_b = 0.6f;
+    public float flSusHardness_b = 1.0f;
+    public float flSusOffset_b = 0.0f;
+    public float flBrakeBias_b = 0.75f;
+    /****/ 
+
+    /*
+    public Transform coMass;
+    public float ePower = 0.0f;
+    public float maxEPower = 150.0f;
+    public float brake = 0.0f;
+    public float minSteer = 0.0f;
+    public float maxSteer = 25.0f;
+    private float[] rotationValue = new float[4];
+     * 
+     /**/ 
+    // Use this for initialization
+    void Start()
+    {
+
+        if (trCenterOfMass_b)
+        {
+            rigidbody.centerOfMass = trCenterOfMass_b.localPosition;
+            wheelMesh[0].transform.Rotate(90.0f, 0.0f, 90.0f);
+            wheelMesh[1].transform.Rotate(90.0f, 0.0f, 90.0f);
+
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        /*
+        ePower = Input.GetAxis("Vertical") * Time.deltaTime * 250.0f* maxEPower;
+        minSteer = Input.GetAxis("Horizontal") * maxSteer;
+
+        if (Input.GetKey("space"))
+        {
+            brake = rigidbody.mass * 0.1f;
+        }
+        else
+        {
+            brake = 0.0f;
+        }
+
+        if (brake > 0.0f)
+        {
+            wheels[0].brakeTorque = brake;
+            wheels[1].brakeTorque = brake;
+            wheels[2].brakeTorque = brake;
+            wheels[3].brakeTorque = brake;
+            wheels[2].motorTorque = 0.0f;
+            wheels[3].motorTorque = 0.0f;
+
+        }
+        else
+        {
+
+            wheels[0].brakeTorque = 0.0f;
+            wheels[1].brakeTorque = 0.0f;
+            wheels[2].brakeTorque = 0.0f;
+            wheels[3].brakeTorque = 0.0f;
+            wheels[2].motorTorque = ePower;
+            wheels[3].motorTorque = ePower;
+            animateWheels();
+
+        }
+
+        wheels[0].steerAngle = minSteer;
+        wheels[1].steerAngle = minSteer;
+
+        wheelMesh[0].transform.rotation = wheels[0].transform.rotation * Quaternion.Euler(0, wheels[0].steerAngle - 90.0f, -rotationValue[0]);
+        wheelMesh[1].transform.rotation = wheels[0].transform.rotation * Quaternion.Euler(0, wheels[0].steerAngle - 90.0f, -rotationValue[0]);
+        rotationValue[0] += wheels[0].rpm * (360.0f / 60.0f) * Time.deltaTime;
+
+        wheelMesh[2].transform.rotation = wheels[1].transform.rotation * Quaternion.Euler(0, wheels[1].steerAngle + 90.0f, rotationValue[1]);
+        wheelMesh[3].transform.rotation = wheels[1].transform.rotation * Quaternion.Euler(0, wheels[1].steerAngle + 90.0f, rotationValue[1]);
+        rotationValue[1] += wheels[1].rpm * (360.0f / 60.0f) * Time.deltaTime;
+
+        wheelMesh[4].transform.rotation = wheels[2].transform.rotation * Quaternion.Euler(0, wheels[2].steerAngle - 90.0f, -rotationValue[2]);
+        wheelMesh[5].transform.rotation = wheels[2].transform.rotation * Quaternion.Euler(0, wheels[2].steerAngle - 90.0f, -rotationValue[2]);
+        rotationValue[2] += wheels[2].rpm * (360.0f / 60.0f) * Time.deltaTime;
+
+        wheelMesh[6].transform.rotation = wheels[3].transform.rotation * Quaternion.Euler(0, wheels[3].steerAngle + 90.0f, rotationValue[3]);
+        wheelMesh[7].transform.rotation = wheels[3].transform.rotation * Quaternion.Euler(0, wheels[3].steerAngle + 90.0f, rotationValue[3]);
+        rotationValue[3] += wheels[3].rpm * (360.0f / 60.0f) * Time.deltaTime;
+        /**/
+    }
+
+    void FixedUpdate()
+    {
+
+        flSpeed_v = rigidbody.velocity.sqrMagnitude;
+        flSteer_v = Input.GetAxis("Horizontal");
+        flForward_v = Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1);
+        flBrake_v = -1 * Mathf.Clamp(Input.GetAxis("Vertical"), -1, 0);
+
+        if (flSpeed_v == 0 && flForward_v == 0 && flReverse_v == 0)
+        {
+            blBrakeRelesed_v = true;
+        }
+
+        if (flSpeed_v == 0 && blBrakeRelesed_v)
+        {
+            if (flReverse_v > 0) { blReversing_v = true; }
+            if (flForward_v > 0) { blReversing_v = false; }
+        }
+        if (blReversing_v)
+        {
+            flMotor_v = -1 * flReverse_v;
+            flBrake_v = flForward_v;
+
+        }
+        else
+        {
+
+            flMotor_v = flForward_v;
+            flBrake_v = flReverse_v;
+
+        }////
+
+        if (flBrake_v > 0) { blBrakeRelesed_v = false; }
+
+        wheels[2].motorTorque = flEnginePower_b * flMotor_v;
+        wheels[3].motorTorque = flEnginePower_b * flMotor_v;
+        wheels[2].brakeTorque = flMaxBrake_b * flBrake_v;
+        wheels[3].brakeTorque = flMaxBrake_b * flBrake_v;
+
+        if (flSteer_v == 0 && wheels[0].steerAngle != 0)
+        {
+            if (Mathf.Abs(wheels[1].steerAngle) <= (flSteerSpeed_b * Time.deltaTime))
+            {
+                wheels[0].steerAngle = 0;
+            }
+            else if (wheels[0].steerAngle > 0)
+            {
+                wheels[0].steerAngle = wheels[0].steerAngle - (flSteerSpeed_b * Time.deltaTime);
+            }
+            else
+            {
+                wheels[0].steerAngle = wheels[0].steerAngle + (flSteerSpeed_b * Time.deltaTime);
+            }
+        }
+        else
+        {
+
+            wheels[0].steerAngle = wheels[0].steerAngle + (flSteer_v * flSteerSpeed_b * Time.deltaTime);
+            if (wheels[0].steerAngle > flMaxSteer_b) { wheels[0].steerAngle = flMaxSteer_b; }
+            if (wheels[0].steerAngle < -1 * flMaxSteer_b) { wheels[0].steerAngle = -1 * flMaxSteer_b; }
+
+        }
+        wheels[1].steerAngle = wheels[0].steerAngle;
+        
+
+    }
+
+    void setupWheels()
+    {
+
+
+
+    }
+
+    void animateWheels()
+    {
+        foreach (GameObject wm in wheelMesh)
+        {
+            //wm.transform.Rotate(0.0f, 0.0f, 1.0f);
+        }
+    }
+
+}
+/**/
